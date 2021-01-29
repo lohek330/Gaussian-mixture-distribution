@@ -15,7 +15,7 @@ for j=1:20
 
         loop_n = 6000;
 
-        eta = 4; % stepsize of gradient descent
+        eta = 100; % stepsize of gradient descent
 
         count=0;
         for test=1:test_max
