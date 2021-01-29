@@ -83,6 +83,6 @@ xlabel('$\log(\sigma)$','interpreter','latex');
 ylabel('Number of Samples');
 set(gca,'XTick',[3 13]);
 set(gca,'Xticklabel',{'-1','1'});
-set(gca,'YTick',[1 5 10]);
+set(gca,'YTick',[1 6 10]);
 set(gca,'Yticklabel',{'20000','10000','2000'});
 set(gca,'fontsize',18,'fontname', 'Times New Roman');
