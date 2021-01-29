@@ -1,0 +1,86 @@
+clear all;
+% Parameter
+L=2;
+sample_s=zeros(15,10);
+delta_=1000;
+runs=20;
+d=5;
+test_max=20;
+
+
+for j=1:15
+
+    for i=1:10
+        N0 = i*delta_; % sampling number
+        K = 3;    % number of nodes in hidden layer
+
+        loop_n = 10000;
+
+        eta = 2; % stepsize of gradient descent
+
+        count=0;
+        for test=1:test_max
+            %  mix-gaussian parameter
+            
+            p=[0.5 0.5];
+            mu1=0.5*j*ones(1,d);
+            mu2=-1*ones(1,d);
+            mu=cat(1,mu1,mu2);         
+
+            sigma=ones(1,d,2);
+            x_N=rand_mixedgau(d,N0,mu,sigma,p);
+            
+            % Generate W
+
+            W = 1 * randn( d, K );
+
+            % Algorithm
+      
+            [H_matrix, H_FCN] = Conv_sigmoid_FCN( x_N, W );
+            y_N=zeros(1,N0);
+
+            for ind=1:N0
+                y_N(ind)=binornd(1,H_FCN(ind));
+            end
+            W_out=zeros(d*K,runs);
+            for run=1:runs
+                temp = randn( d , K );
+                W_0 = W + 0.1 * norm( W , 'fro' ) * temp / norm( temp ,  'fro' );
+                W_t0=W_0;
+                eta=2;
+                for l = 1 : loop_n
+           
+                    GD=Gradient_crossentropy(x_N,y_N,W_t0);
+                    W_t = W_t0 - eta * GD;
+                    errit( l ) = norm( W-W_t , 'fro') / norm( W , 'fro');
+                    if isnan(errit(l))
+                        break;
+                    end
+                    
+                    W_t0=W_t;
+                end
+                W_out(:,run)=W_t(:);
+            end
+            w_bar=mean(W_out,2);
+            W_bar=ones(d*K,runs).*w_bar;
+            Error=norm(W_bar-W_out,'fro')/sqrt(runs);
+            if Error<=1e-4
+               count=count+1;
+            end
+        end
+        sample_s(11-i,j)=count/test_max;
+        end
+    end
+end
+
+
+imshow(sample_s,'InitialMagnification',4000); 
+
+axis on; 
+xlabel('$\log(\sigma)$','interpreter','latex');
+ylabel('Number of Samples');
+set(gca,'XTick',[2 4 6 8 10 12 14]);
+set(gca,'Xticklabel',{'1','2','3','4','5','6','7'});
+set(gca,'YTick',[1 6 10]);
+set(gca,'Yticklabel',{'10000','5000','1000'});
+set(gca,'fontsize',18,'fontname', 'Times New Roman');
