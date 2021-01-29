@@ -77,7 +77,7 @@ end
 imshow(sample_s,'InitialMagnification',4000); 
 
 axis on; 
-xlabel('$\log(\sigma)$','interpreter','latex');
+xlabel('Value of $\mu$','interpreter','latex');
 ylabel('Number of Samples');
 set(gca,'XTick',[2 4 6 8 10 12 14]);
 set(gca,'Xticklabel',{'1','2','3','4','5','6','7'});
