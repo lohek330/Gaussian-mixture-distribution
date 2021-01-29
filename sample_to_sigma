@@ -29,7 +29,7 @@ for j=1:15
 
             sigma=ones(1,d,2);
             
-            sigma(:,:,2)=power(10^(j*0.2-1.6),2)*ones(1,d);
+            sigma(:,:,1)=power(10^(j*0.2-1.6),2)*ones(1,d);
             x_N=rand_mixedgau(d,N0,mu,sigma,p);
             
             % Generate W
