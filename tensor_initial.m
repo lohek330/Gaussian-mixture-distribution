@@ -1,4 +1,4 @@
-function [W0,v0] = tensor_initial_sqaured_relu(X,y,k,lambda1,lambda2,mu1,mu2)
+function [W0,v0] = tensor_initial(X,y,k,lambda1,lambda2,mu1,mu2)
 
 addpath(genpath('./tensor-factorization/'));
 
@@ -6,10 +6,6 @@ my_ndims = @(x)(isvector(x) + ~isvector(x) * ndims(x));
 outprod = @(u, v)bsxfun(@times, u, permute(v, circshift(1:(my_ndims(u) + my_ndims(v)), [0, my_ndims(u)])));
 
 [d,n] = size(X);
-% for squared relu,
-%M1 = 2/sqrt(2*pi)*(\sum v_i W_i)
-%P2 = sum_i^k 3/2* v_i\|w_i\| barw_i*barw_i', where barw = w/\|w\|.
-% P2 = sum_i^k 8/sqrt(2*pi) * v_i\|w_i\| barw_i*barw_i*barw_i, where barw = w/\|w\|.
 
 
 exp1=exp(-0.5*sum((X-mu1).*(X-mu1),1));
@@ -32,11 +28,10 @@ V = V*R;
 
 Z1 = V'*(X-mu1);
 Z2 = V'*(X-mu2);
-%Z1=X-mu1;
-%Z2=X-mu2;
+
 
 P3 = zeros(k,k,k);
-%P3=zeros(d,d,d);
+
 for i=1:n
     a = Z1(:,i);
     b=Z2(:,i);
@@ -45,15 +40,13 @@ for i=1:n
 end
 P3 = P3/n;
 P13 = zeros(k,k,k);
-%P13=zeros(d,d,d);
+
 M1 = lambda1*V'*((exp1.*(X-mu1)./pp)*y)/n;
 M2 = lambda2*V'*((exp2.*(X-mu2)./pp)*y)/n;
-%M1 = lambda1*((exp1.*(X-mu1)./pp)*y)/n;
-%M2 = lambda2*((exp2.*(X-mu2)./pp)*y)/n;
+
 
 M=M1+M2;
 I = eye(k);
-%I=eye(d);
 
 for i = 1:k
     P13 = P13 + outprod(outprod(M, I(:,i)), I(:,i))...
@@ -61,17 +54,7 @@ for i = 1:k
         + outprod(outprod(I(:,i),M), I(:,i));
 end
 P3 = P3 - P13;
-%barW_star = bsxfun(@rdivide,W_star,sqrt(sum(W_star.*W_star,1)));
-%VbarW = V'*barW_star;
 
-%{
-P3_star = zeros(k,k,k);
-for i=1:k
-    a = VbarW(:,i);
-    P3_star = P3_star + v_star(i)*norm(W_star(:,i))^2*outprod(outprod(a, a), a);
-end
-P3_star = P3_star*2/(sqrt(2*pi));
-%}
 
 [U,~,~] = no_tenfact(tensor(P3), 100, k);
 
