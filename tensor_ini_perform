@@ -88,7 +88,7 @@ for l=1:loop_n
 end
 
 % Tensor initialization
-W_0=tensor_initial_squared_relu(x_N,y_N,K,lambda1,lambda2,mu1,mu2);
+W_0=tensor_initial(x_N,y_N,K,lambda1,lambda2,mu1,mu2);
 W_t0=W_0;
 eta=10;
 loop_n=2000;
