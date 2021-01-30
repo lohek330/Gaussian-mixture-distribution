@@ -1,0 +1,128 @@
+d=50;
+K=2;
+N=200000;
+ 
+mu1=0;
+mu2=-0.3;
+lambda1=0.5;
+lambda2=0.5;
+x_1=randn(d,N*lambda1)+mu1;
+x_2=randn(d,N*lambda2)+mu2;
+x_N=cat(2,x_1,x_2);
+r=randperm(size(x_N,2));
+x_N=x_N(:,r);
+
+W=0.2*rand(d,K);
+
+[H_matrix, H_FCN] = Conv_sigmoid_FCN( x_N, W );
+y_N=H_FCN;
+y_N=zeros(1,N);
+ 
+for j=1:N
+    y_N(j)=binornd(1,H_FCN(j));
+end
+
+test_max=20;
+loop_n=10000;
+err = zeros( loop_n , 1 );
+errit = zeros( loop_n , 1 );
+err_sum=0;
+W_t=zeros(d,K,test_max);
+
+% Algorithm
+for l=1:loop_n   
+    for test = 1 : test_max
+        GD=Gradient_crossentropy(x_N,y_N,W_t0(:,:,test));
+        W_t(:,:,test) = W_t0(:,:,test) - 10 * GD;
+        W_tt=W_t(:,:,test);
+        W_out(:,test)=W_tt(:);
+ 
+        W_t0(:,:,test)=W_t(:,:,test);
+    end
+    w_bar=mean(W_out,2);
+    W_bar=zeros(d*K,test_max);
+    for rn=1:test_max
+        W_bar(:,test_max)=ones(d*K,1).*w_bar;
+    end
+    Error=norm(W_bar-W_out,'fro')/sqrt(test_max);
+    err(l)=Error;
+end
+
+% critical point
+WW=W_t(:,:,1);
+WWW=WW(:,[2,1]);
+
+% Random initialization error=0.1
+W_0=W+0.1*temp/norm(temp,'fro');
+  
+W_t0=W_0;
+eta=10;
+loop_n=2000;
+err_r1=zeros(loop_n,1);
+for l=1:loop_n
+ 
+    GD=Gradient_crossentropy(x_N,y_N,W_t0);
+    tp=randn(d,K);
+    tp=tp/norm(tp,'fro');
+    W_t=W_t0-eta*GD;
+    W_t0=W_t;
+
+    err_r1(l)=min(norm(W_t-WW,'fro')/norm(WW,'fro'),norm(W_t-WWW,'fro')/norm(WWW,'fro'));
+end
+
+% Gaussian random initialization
+W_0=5*randn(d,K);
+W_t0=W_0;
+eta=10;
+loop_n=2000;
+err_rg=zeros(loop_n,1);
+for l=1:loop_n
+ 
+    GD=Gradient_crossentropy(x_N,y_N,W_t0);
+    tp=randn(d,K);
+    tp=tp/norm(tp,'fro');
+    W_t=W_t0-eta*GD;
+    W_t0=W_t;
+
+    err_rg(l)=min(norm(W_t-WW,'fro')/norm(WW,'fro'),norm(W_t-WWW,'fro')/norm(WWW,'fro'));
+end
+
+% Tensor initialization
+W_0=tensor_initial_squared_relu(x_N,y_N,K,lambda1,lambda2,mu1,mu2);
+W_t0=W_0;
+eta=10;
+loop_n=2000;
+err_t=zeros(loop_n,1);
+for l=1:loop_n
+ 
+    GD=Gradient_crossentropy(x_N,y_N,W_t0);
+    tp=randn(d,K);
+    tp=tp/norm(tp,'fro');
+    W_t=W_t0-eta*GD;
+    W_t0=W_t;
+
+    err_t(l)=min(norm(W_t-WW,'fro')/norm(WW,'fro'),norm(W_t-WWW,'fro')/norm(WWW,'fro'));
+end
+
+% figure
+semilogy(err_t , 'b', 'Linewidth' , 2);
+axis on; 
+grid on;
+hold on;
+semilogy(err_r1 , 'r', 'Linewidth' , 2);
+axis on; 
+grid on;
+hold on;
+semilogy(err_rg , 'm', 'Linewidth' , 2);
+axis on; 
+grid on;
+hold on;
+
+ylabel('$\|W_t-\widehat{W}_n\|_F$','interpreter','latex');
+xlabel('Number of iterations');
+
+ylim([1e-6 100]);
+
+legend('Tensor initialization','Random initialization, \epsilon=0.1','Gaussian initialization');
+
+set(gca,'fontsize',18,'fontname', 'Times New Roman');
