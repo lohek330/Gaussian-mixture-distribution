@@ -66,7 +66,7 @@ x=2000:2000:60000;
 x=x';
 x=sqrt(log(x)./x);
 plot(fliplr(x),fliplr(M_E),'-bo','Linewidth',2);
-ylabel('$\|\widehat{W}_n-W^*\|_F$','Interperter','latex');
-xlabel('$\sqrt{\frac{\log{n}}{n}}$','Interpreter','latex');
+ylabel('$\|\widehat{W}_n-W^*\|_F$','interpreter','latex');
+xlabel('$\sqrt{\frac{\log{n}}{n}}$','interpreter','latex');
 
 set(gca,'fontsize',18,'fontname', 'Times New Roman');
