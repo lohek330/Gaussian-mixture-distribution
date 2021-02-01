@@ -4,7 +4,7 @@
 N =50000; % number of samples
 
 d = 5;   % dmension of raw data
-loop_n = 500;
+loop_n = 10000;
 
 
 err_out=zeros(loop_n,7);
@@ -15,13 +15,6 @@ convergence_rate=zeros(7,1);
 
 for K=2:8
     W = 1* randn( d, K );
-    %{
-    x_1=randn(d,N*0.5)+1;
-    x_2=randn(d,N*0.5)-1;
-    x_N=cat(2,x_1,x_2);
-    r=randperm(size(x_N,2));
-    x_N=x_N(:,r);
-    %}
     p=[0.5 0.5];
     mu1=ones(1,d);
     mu2=-1*ones(1,d);
@@ -68,7 +61,7 @@ for K=2:8
             W_t0(:,:,test)=W_t(:,:,test);
         end
         w_bar=mean(W_out,2);
-        W_bar=ones(d*K,20).*w_bar;
+        W_bar=ones(d*K,test_max).*w_bar;
         Error=norm(W_bar-W_out,'fro')/sqrt(test_max);
         err(l)=Error;
     end
