@@ -17,18 +17,7 @@ for i=1:30
   
   err_sum=0;
   for test=1:test_max
-      
-    % Generate W and y
-    %x_N=randn(d,N);
-    %{
-    p=[0.5 0.5];
-    mu1=1*ones(1,d);
-    mu2=-1*ones(1,d);
-    mu=cat(1,mu1,mu2);         
 
-    sigma=ones(1,d);
-    x_N=rand_mixedgau(d,N,mu,sigma,p);
-    %}
     
     x_1=9*randn(d,N*0.5)+1;
     x_2=9*randn(d,N*0.5)-1;
