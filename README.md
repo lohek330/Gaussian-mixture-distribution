@@ -7,3 +7,4 @@ The file sample_to_dimension.m illustrates the relationship between the sample c
 
 One can run err_mu.m and err_sigma.m to obtain Figure 4 (a) and (b), which shows the convergence rate with different mean and variance.
 
+The file convergence_rate_K.m is to find out how the convergence rate will change when the number of hidden neurons changes (Figure 5), while critical_to_gt.m shows how the relative error of the learned model will change when the number of samples changes.
