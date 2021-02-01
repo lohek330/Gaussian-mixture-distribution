@@ -8,6 +8,7 @@ loop_n = 30000;
 Sigma=[1,1.1,1.2,1.3,1.4];
 Sigma=diag(Sigma);
 W = 5* randn( d, K );
+test_max=20;
 
 
 eta0=100; %step size
@@ -37,30 +38,30 @@ for i=1:5
     for j=1:N
         y_N(j)=binornd(1,H_FCN(j));
     end
-    W_out=zeros(d*K,20);
+    W_out=zeros(d*K,test_max);
 
     err = zeros( loop_n , 1 );
 
-    W_0=zeros(d,K,20);
+    W_0=zeros(d,K,test_max);
 
 
-    for t=1:20
+    for t=1:test_max
         temp = randn( d , K );
         W_0(:,:,t) = W + 0.1* norm( W , 'fro' ) * temp / norm( temp ,  'fro' );
     end
     W_t0=W_0;
 
-    W_out=zeros(d*K,20);
-    W_0=zeros(d,K,20);
+    W_out=zeros(d*K,test_max);
+    W_0=zeros(d,K,test_max);
 
    
 
     err_sum=0;
-    W_t=zeros(d,K,20);
+    W_t=zeros(d,K,test_max);
     eta=eta0*1.4*1.4/power(Mu(i)+1.4,2);
     % Algorithm
     for l=1:loop_n   
-        for test = 1 : 20
+        for test = 1 : test_max
             GD=Gradient_crossentropy(x_N,y_N,W_t0(:,:,test));
 
             W_t(:,:,test) = W_t0(:,:,test) - eta * GD;
@@ -70,8 +71,8 @@ for i=1:5
             W_t0(:,:,test)=W_t(:,:,test);
         end
         w_bar=mean(W_out,2);
-        W_bar=ones(d*K,20).*w_bar;
-        Error=norm(W_bar-W_out,'fro')/sqrt(20);
+        W_bar=ones(d*K,test_max).*w_bar;
+        Error=norm(W_bar-W_out,'fro')/sqrt(test_max);
         err(l)=Error;
     end
     err_out(:,i)=err;
