@@ -12,7 +12,7 @@ x_N=cat(2,x_1,x_2);
 r=randperm(size(x_N,2));
 x_N=x_N(:,r);
 
-W=0.2*rand(d,K);
+W=0.2*rand(d,K)-0.1;
 
 [H_matrix, H_FCN] = Conv_sigmoid_FCN( x_N, W );
 y_N=H_FCN;
