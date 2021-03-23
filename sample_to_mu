@@ -69,7 +69,6 @@ for j=1:15
             end
         end
         sample_s(11-i,j)=count/test_max;
-        end
     end
 end
 
